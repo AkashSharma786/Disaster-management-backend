@@ -3,37 +3,48 @@ package com.akash.webApp.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.akash.webApp.Model.RegistrationModel;
-import com.akash.webApp.Repository.RegistrationRepo;
+import com.akash.webApp.Model.UsersModel;
+
+import com.akash.webApp.Repository.UsersRepo;
 
 @Component
 public class RegistrationService {
 
-    @Autowired
-    private RegistrationRepo registrationRepo;
+    public BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12) ;
 
-    public String registerUser(String username, String email, String password, String location, Long pone, String role) {
+    @Autowired
+    private UsersRepo registrationRepo;
+
+    public String registerUser(UsersModel user) {
         // Here you would typically save the user details to a database
         // For simplicity, we are just printing the details and returning a success message
-        if(username == null || email == null || password == null || location == null || pone == null || role == null    ) {
+        if(user.getFirstName() == null 
+            || user.getLastName() == null
+            || user.getEmail() == null 
+            || user.getPassword() == null 
+            || user.getStateOrUT() == null 
+            || user.getDistrict() == null
+            || user.getPhoneNumber() == null 
+            || user.getRole() == null    ) {
             return "Invalid registration data";
         }
 
-        RegistrationModel model = new RegistrationModel(username, email, password);
-        model.setLocation(location);
-        model.setPhoneNumber(pone);
-        model.setRole(role);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        registrationRepo.save(model);
+       
 
-        System.out.println("Registering user: " + username + ", " + email);
+        registrationRepo.save(user);
+
+        System.out.println("Registering user: " + user.getFirstName() + " "+ user.getLastName() + ", " + user.getEmail());
         return "User registered successfully";
     }
 
-    public List<RegistrationModel> getAllUsers() {
+    public List<UsersModel> getAllUsers() {
         return registrationRepo.findAll();
     }
-    
+
 }

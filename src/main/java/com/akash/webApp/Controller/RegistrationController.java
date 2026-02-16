@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.akash.webApp.Model.RegistrationModel;
+import com.akash.webApp.Model.UsersModel;
 import com.akash.webApp.Service.RegistrationService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,24 +23,21 @@ public class RegistrationController {
 
     
 
-    @GetMapping("/register")
-    public List<RegistrationModel> getAllUsers() {
+    @GetMapping("/admin/users")
+    public List<UsersModel> getAllUsers() {
 
         return RegistrationService.getAllUsers();
     }
 
 
-    @PostMapping("/register")
-    public String postMethodName(@RequestBody RegistrationModel entity) {
-        //TODO: process POST request
+    @PostMapping("/api/auth/register")
+    public String postMethodName(@RequestBody UsersModel entity) {
+
+       
+       
         
         return RegistrationService.registerUser(
-            entity.getUsername(),
-            entity.getEmail(),
-            entity.getPassword(),
-            entity.getLocation(),
-            entity.getPhoneNumber(),
-            entity.getRole()
+            entity
         );
     }
     
