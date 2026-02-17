@@ -39,17 +39,9 @@ public class ReportController {
        return new String("Hello" );
    }
    
-    @GetMapping("/admin/reports")
-    public List<DisasterReport> requestMethodName() {
-        return disasterReportService.getAllReports();
-    }
+    
 
-    @PostMapping("/admin/reports")
-    public String postMethodName(@RequestBody DisasterReport entity) {
-           String result = disasterReportService.addReport(entity);
-          
-           return "report Created";
-    }
+   
     
     
    

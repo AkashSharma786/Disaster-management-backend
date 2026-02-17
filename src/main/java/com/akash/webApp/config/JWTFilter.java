@@ -44,10 +44,10 @@ public void doFilterInternal(HttpServletRequest request, HttpServletResponse res
     
     token = authHeader.substring(7);
     
-    //username = "akash@example.com";
+  
     username = jwtService.extractUsername(token);
 
-    if(username != null && SecurityContextHolder.getContext().getAuthentication() != null){
+    if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
         UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
 
         if(jwtService.validateToken(token, userDetails)){

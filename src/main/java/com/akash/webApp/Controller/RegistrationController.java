@@ -21,14 +21,6 @@ public class RegistrationController {
     @Autowired
     private RegistrationService RegistrationService;
 
-    
-
-    @GetMapping("/admin/users")
-    public List<UsersModel> getAllUsers() {
-
-        return RegistrationService.getAllUsers();
-    }
-
 
     @PostMapping("/api/auth/register")
     public String postMethodName(@RequestBody UsersModel entity) {
