@@ -38,7 +38,7 @@ public class AdminController {
     @GetMapping("/admin/ndma-alerts")
     public String getMethodName()  {
         String  result =  apiService.getApiAlerts();
-        System.out.println(result);
+       // System.out.println(result);
         return  result;
     }
     
