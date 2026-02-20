@@ -24,13 +24,7 @@ public class RegistrationController {
 
     @PostMapping("/api/auth/register")
     public String postMethodName(@RequestBody UsersModel entity) {
-
-       
-       
-        
-        return RegistrationService.registerUser(
-            entity
-        );
+        return RegistrationService.registerUser(entity);
     }
     
        

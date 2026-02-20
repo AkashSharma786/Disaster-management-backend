@@ -18,6 +18,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -40,52 +41,48 @@ public class ApiService {
     String res = "";
     @Autowired
     AlertHeadingService alertHeadingService;
+    @Autowired
+    Apis apis;
 
-    private WebClient localClient;
+    public Object loadResponse(WebClient client) throws Exception {
+        XmlMapper xmlMapper = new XmlMapper();
 
-   
-   
-    public  ApiService(){
-        this.localClient = new Apis().getWeblient();
-    }
+        Mono<String> response = client.get()
+                .retrieve()
+                .bodyToMono(String.class);
 
-    public String getApiAlerts() {
-        Mono<String> response =
-        localClient.get()
-        .retrieve()
-        .bodyToMono(String.class);
-
-        
-        
-        
-        String err;
-        Consumer<String> dataConsumer = new Consumer<String>()  {
-           public void accept(String data){
-            //System.out.println(data);
-            res += res.concat(data) ;
-           // System.out.print(res);
-          }  
+        Consumer<String> dataConsumer = new Consumer<String>() {
+            public void accept(String data) {
+                // System.out.println(data);
+                res += res.concat(data);
+                // System.out.print(res);
+            }
         };
-          
+
         response.subscribe(dataConsumer);
-        response.block( Duration.ofMillis(5000));
-        
-       
+        response.block();
 
-        alertHeadingService.getAlertHeadings(res);
+        JsonNode jsonNode = xmlMapper.readTree(res);
+        Object obj = JSONValue.parse(jsonNode.toString());
 
-      
-    
-      
-  
-      
-      
+        return obj;
 
-         return res ;
     }
 
-    
-    
+    public AltertResponse getApiAlerts() throws Exception {
 
-    
+        WebClient client = apis.getWeblient();
+
+        return alertHeadingService.getAlertHeadings(loadResponse(client));
+
+    }
+
+    public AltertResponse getApiAlerts(int state_id) throws Exception {
+
+        WebClient client = apis.getWebClient(state_id);
+        
+        return alertHeadingService.getAlertHeadings(loadResponse(client));
+
+    }
+
 }

@@ -1,10 +1,19 @@
 package com.akash.webApp.Model.AlertModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown =  true)
 public class AlertHeading {
 
     private String title;
     private String link;
     private String pubDate;
+
+    public AlertHeading(String title, String link, String pubDate){
+        this.title = title;
+        this.link = link;
+        this.pubDate = pubDate;
+    }
 
     public String getTitle() {
         return this.title;

@@ -1,77 +1,37 @@
 package com.akash.webApp.Service.AlertServices;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import com.akash.webApp.Model.AlertModels.AlertHeading;
-import java.text.Normalizer;
+import com.akash.webApp.Model.AlertModels.AltertResponse;
 
 @Service
 public class AlertHeadingService {
 
-    public void getAlertHeadings(String xml) {
-        
-        String norm = Normalizer.normalize(xml, Normalizer.Form.NFD);
-        String noDiacritics = norm.replaceAll("\\p{M}", "?");            // removes accents
-         xml = noDiacritics.replaceAll("[^\\x00-\\x7F]", "?"); 
+    public AltertResponse getAlertHeadings(Object obj) {
 
-        try {
+        JSONObject jsonObject = (JSONObject) obj;
+        JSONObject channel = (JSONObject) jsonObject.get("channel");
+        JSONArray items = (JSONArray) channel.get("item");
 
-            System.out.println(xml);
+        AltertResponse alertRes = new AltertResponse();
+        List<AlertHeading> alertHeadings = new ArrayList<>();
 
-            XPath xPath = XPathFactory.newInstance().newXPath();
-            XPathExpression eXPathExpression = xPath.compile("/rss/channel/item");
-            InputSource inputSource = new InputSource(new StringReader(xml));
-            NodeList nodeList = (NodeList) eXPathExpression.evaluate(inputSource, XPathConstants.NODESET);
+        for (int i = 0; i < items.size(); i++) {
+            JSONObject item = (JSONObject) items.get(i);
 
-            for(int i = 0; i < nodeList.getLength(); i++)
-            {
+            AlertHeading alertHeading = new AlertHeading((String) item.get("title"), (String) item.get("link"),
+                    (String) item.get("pubDate"));
+            alertHeadings.add(alertHeading);
+            // System.out.println(alertHeading.toString());
 
-                
-                Node node = nodeList.item(i);
-                
-                System.out.println(node);
-
-                if(node.getNodeType() == Node.ELEMENT_NODE)
-                {   NodeList elements = node.getChildNodes();
-
-                    for(int j = 0; j < elements.getLength(); j++)
-                    {
-                        Node childNode = elements.item(j);
-                        if(childNode.getNodeType() == Node.ELEMENT_NODE)
-                        {
-                            Element element = (Element) childNode;
-                            System.out.print(element.getTagName() +" -> "+ element.getTextContent());
-                        }
-                    }
-                    
-                }
-                else
-                    System.out.print(false);
-            }
-            System.out.println("filteredXml");
-
-        } catch (Exception e) {
-            System.out.println(e);
         }
+        alertRes.setAlertHeadings(alertHeadings);
+        return alertRes;
+
     }
 
 }

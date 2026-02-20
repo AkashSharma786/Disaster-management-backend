@@ -24,8 +24,23 @@ public class UsersModel {
 
     @Column(unique =  true)
     private String email;
-    private String stateOrUT;
-    private String district;
+ 
+    
+   
+
+   
+    public District getDistrictLGDCode() {
+        return districtLGDCode;
+    }
+
+    public void setDistrictLGDCode(District districtLGDCode) {
+        this.districtLGDCode = districtLGDCode;
+    }
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(referencedColumnName = "lgd_code", nullable = false)
+    private District districtLGDCode;
+
+
     private String password;
     @Column(unique =  true)
     private Long phoneNumber;
@@ -33,6 +48,17 @@ public class UsersModel {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
+
+    public UsersModel(String firstName, String lastName, String email, District districtLGDCode,
+            String password, Long phoneNumber, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.districtLGDCode = districtLGDCode;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 
     public UsersModel() {
     }
@@ -42,6 +68,8 @@ public class UsersModel {
         this.email = email;
         this.password = password;
     }
+
+
 
     public String getFirstName(){
         return this.firstName;
@@ -58,21 +86,10 @@ public class UsersModel {
     public void setLastName(String lastName){
          this.lastName = lastName;
     }
+    
 
 
-    public String getStateOrUT() {
-        return stateOrUT;
-    }
-    public void setStateOrUT(String stateOrUT) {
-        this.stateOrUT = stateOrUT;
-    }
-
-     public String getDistrict() {
-        return district;
-    }
-    public void setDistrict(String district) {
-        this.district = district;
-    }
+    
 
     public Long getPhoneNumber() {
         return phoneNumber;
