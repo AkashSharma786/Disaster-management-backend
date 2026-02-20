@@ -41,46 +41,45 @@ public class ApiService {
     String res = "";
     @Autowired
     AlertHeadingService alertHeadingService;
-    @Autowired
-    Apis apis;
 
-    public Object loadResponse(WebClient client) throws Exception {
+    public Mono<Object> loadResponse(WebClient client) throws Exception {
+
         XmlMapper xmlMapper = new XmlMapper();
 
-        Mono<String> response = client.get()
+        Mono<Object> response = client.get()
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .map(res -> {
+                    try{
+                        JsonNode jsonNode = xmlMapper.readTree(res);
+                        Object obj = JSONValue.parse(jsonNode.toString());
+                        return obj;
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e);
+                        return null;
+                       
+                    }
 
-        Consumer<String> dataConsumer = new Consumer<String>() {
-            public void accept(String data) {
-                // System.out.println(data);
-                res += res.concat(data);
-                // System.out.print(res);
-            }
-        };
+                });
 
-        response.subscribe(dataConsumer);
-        response.block();
-
-        JsonNode jsonNode = xmlMapper.readTree(res);
-        Object obj = JSONValue.parse(jsonNode.toString());
-
-        return obj;
+        return response;
 
     }
 
-    public AltertResponse getApiAlerts() throws Exception {
+    public Mono<AltertResponse> getApiAlerts() throws Exception {
 
-        WebClient client = apis.getWeblient();
+        WebClient client = Apis.getWeblient();
 
         return alertHeadingService.getAlertHeadings(loadResponse(client));
 
     }
 
-    public AltertResponse getApiAlerts(int state_id) throws Exception {
+    public Mono<AltertResponse> getApiAlerts(int state_id) throws Exception {
 
-        WebClient client = apis.getWebClient(state_id);
-        
+        WebClient client = Apis.getWebClient(state_id);
+
         return alertHeadingService.getAlertHeadings(loadResponse(client));
 
     }

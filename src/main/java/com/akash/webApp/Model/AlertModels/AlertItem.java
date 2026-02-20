@@ -2,6 +2,10 @@ package com.akash.webApp.Model.AlertModels;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+import com.akash.webApp.Model.District;
+
 public class AlertItem {
     private String event;
     private String urgency;
@@ -21,10 +25,10 @@ public class AlertItem {
         this.expiryDate = expiryDate;
     }
 
-    private List<Integer> lgd_codes;
+    private List<District> district;
 
     public AlertItem(String event, String urgency, String severity, String certainty, String message,
-            String instruction, String effectiveDate, String expiryDate, List<Integer> lgd_codes) {
+            String instruction, String effectiveDate, String expiryDate, List<District> district) {
         this.event = event;
         this.urgency = urgency;
         this.severity = severity;
@@ -33,7 +37,7 @@ public class AlertItem {
         this.instruction = instruction;
         this.effectiveDate = effectiveDate;
         this.expiryDate = expiryDate;
-        this.lgd_codes = lgd_codes;
+        this.district = district;
     }
 
     public String getSeverity() {
@@ -78,12 +82,12 @@ public class AlertItem {
 
  
 
-    public List<Integer> getLgd_codes() {
-        return lgd_codes;
+    public List<District> getDistrict() {
+        return district;
     }
 
-    public void setLgd_codes(List<Integer> lgd_codes) {
-        this.lgd_codes = lgd_codes;
+    public void setDistrict(List<District> district) {
+        this.district = district;
     }
 
     public String getUrgency() {

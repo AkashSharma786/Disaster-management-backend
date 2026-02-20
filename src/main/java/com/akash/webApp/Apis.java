@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class Apis {
 
-    private List<String> links = List.of(
+    private static List<String> links = List.of(
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml",
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_andaman.xml",
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_andhra.xml",
@@ -50,11 +50,11 @@ public class Apis {
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_west.xml"
     );
 
-    public WebClient  getWeblient(){
+    public static WebClient  getWeblient(){
        
         return  WebClient.create("https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml");
     }
-    public WebClient getWebClient(int state_index){
+    public static WebClient getWebClient(int state_index){
        return WebClient.create(links.get(state_index)); 
     }
     

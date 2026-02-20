@@ -1,8 +1,6 @@
 package com.akash.webApp.Model.AlertModels;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown =  true)
 public class AlertHeading {
 
     private String title;

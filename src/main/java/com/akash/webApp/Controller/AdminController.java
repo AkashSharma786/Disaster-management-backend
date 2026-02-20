@@ -15,6 +15,7 @@ import com.akash.webApp.Model.AlertModels.AltertResponse;
 import com.akash.webApp.Service.ApiService;
 import com.akash.webApp.Service.DisasterReportService;
 import com.akash.webApp.Service.RegistrationService;
+import com.akash.webApp.Service.AlertServices.AlertItemService;
 
 import reactor.core.publisher.Mono;
 
@@ -29,6 +30,8 @@ public class AdminController {
     DisasterReportService disasterReportService;
     @Autowired
     ApiService apiService;
+    @Autowired
+    AlertItemService alertItemService;
 
     @Autowired 
     RegistrationService registrationService;
@@ -39,19 +42,36 @@ public class AdminController {
     }
 
     @GetMapping("/admin/ndma-alerts")
-    public AltertResponse getMethodName()  throws Exception {
+    public Mono<AltertResponse> getAlerts()  throws Exception {
         
-            AltertResponse  result =  apiService.getApiAlerts();
-            return result;
+             return apiService.getApiAlerts();
+             
         
     }
 
 @GetMapping("/admin/ndma-alerts/{state_id}")
-public ResponseEntity<AltertResponse> getMethodName(@PathVariable Integer state_id) throws Exception {
+public Mono<ResponseEntity<AltertResponse>> getStateAlerts(@PathVariable Integer state_id) throws Exception {
     if(state_id < 1 || state_id > 36)
-        return ResponseEntity.badRequest().body(null);
+        return Mono.just(ResponseEntity.badRequest().body(null));
 
-    AltertResponse result = apiService.getApiAlerts(state_id);
+    Mono<AltertResponse> result = apiService.getApiAlerts(state_id);
+
+    return result.map(res -> {
+        
+        return ResponseEntity.ok(res);
+    });
+    
+}
+
+@GetMapping("/admin/ndma-alerts/{state_id}/{item_index}")
+public ResponseEntity<String> getAlertItem(@PathVariable Integer item_index) throws Exception {
+
+        String result = alertItemService.getAlertItem(item_index);
+
+        if(item_index < 0 || item_index > 20)
+            return ResponseEntity.badRequest().body("Failed to get resouce ");
+
+    
     return ResponseEntity.ok(result);
 }
 
