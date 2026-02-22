@@ -29,16 +29,16 @@ public class UsersModel {
    
 
    
-    public District getDistrictLGDCode() {
-        return districtLGDCode;
+    public District getDistrict() {
+        return district;
     }
 
-    public void setDistrictLGDCode(District districtLGDCode) {
-        this.districtLGDCode = districtLGDCode;
+    public void setDistrict(District district) {
+        this.district = district;
     }
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(referencedColumnName = "lgd_code", nullable = false)
-    private District districtLGDCode;
+    private District district;
 
 
     private String password;
@@ -49,12 +49,12 @@ public class UsersModel {
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
 
-    public UsersModel(String firstName, String lastName, String email, District districtLGDCode,
+    public UsersModel(String firstName, String lastName, String email, District district,
             String password, Long phoneNumber, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.districtLGDCode = districtLGDCode;
+        this.district = district;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;

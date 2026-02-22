@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.akash.webApp.Model.DisasterReport;
 import com.akash.webApp.Model.UsersModel;
+import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
 import com.akash.webApp.Service.ApiService;
 import com.akash.webApp.Service.DisasterReportService;
@@ -64,15 +65,17 @@ public Mono<ResponseEntity<AltertResponse>> getStateAlerts(@PathVariable Integer
 }
 
 @GetMapping("/admin/ndma-alerts/{state_id}/{item_index}")
-public ResponseEntity<String> getAlertItem(@PathVariable Integer item_index) throws Exception {
+public Mono<AlertItem> getAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index ) throws Exception {
 
-        String result = alertItemService.getAlertItem(item_index);
+        Mono<AlertItem> result = alertItemService.getAlertItem(state_id, item_index);
 
         if(item_index < 0 || item_index > 20)
-            return ResponseEntity.badRequest().body("Failed to get resouce ");
+            return null;
+
+        result.onErrorReturn(new AlertItem());
 
     
-    return ResponseEntity.ok(result);
+    return result;
 }
 
     

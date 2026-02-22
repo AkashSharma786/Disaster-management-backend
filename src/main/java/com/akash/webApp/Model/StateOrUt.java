@@ -8,17 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-public class StateOrUt {
+public class StateorUt {
         @Id
         private Integer id;
         @Column(nullable = false)
-        private String stateOrUtName; 
+        private String stateorUtName; 
 
-        public StateOrUt(){
+        public StateorUt(){
                 
         }
-        public StateOrUt(String stateOrUtName, Integer id) {
-                this.stateOrUtName = stateOrUtName;
+        public StateorUt(String stateorUtName, Integer id) {
+                this.stateorUtName = stateorUtName;
                 this.id = id;
 
         }
@@ -31,12 +31,12 @@ public class StateOrUt {
                 this.id = id;
         }
 
-        public void setStateOrUtName(String stateOrUtName) {
-                this.stateOrUtName = stateOrUtName;
+        public void setStateorUtName(String stateorUtName) {
+                this.stateorUtName = stateorUtName;
         }
 
-        public String getStateOrUtName() {
-                return stateOrUtName;
+        public String getStateorUtName() {
+                return stateorUtName;
         }
 
 }

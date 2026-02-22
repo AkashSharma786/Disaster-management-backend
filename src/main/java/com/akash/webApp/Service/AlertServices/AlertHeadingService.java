@@ -25,8 +25,12 @@ public class AlertHeadingService {
 
             List<Object> items ;
 
-            if((itemObj instanceof JSONObject))
-            {   items = new ArrayList<>();
+            items = new ArrayList<>();
+            if(itemObj == null){
+                
+            }
+            else if((itemObj instanceof JSONObject))
+            {   
                 items.add(itemObj);
             }
             else{
@@ -46,11 +50,13 @@ public class AlertHeadingService {
                     (String) item.get("pubDate"));
             alertHeadings.add(alertHeading);
             // System.out.println(alertHeading.toString());
-            alertRes.setAlertHeadings(alertHeadings);
+            
 
            
 
             } 
+
+            alertRes.setAlertHeadings(alertHeadings);
             return alertRes;
 
 

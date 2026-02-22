@@ -3,10 +3,11 @@ package com.akash.webApp.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.akash.webApp.Model.StateOrUt;
+import com.akash.webApp.Model.StateorUt;
+
 
 @Repository
-public interface StateOrUtRepo extends JpaRepository<StateOrUt, Integer>{
+public interface StateorUtRepo extends JpaRepository<StateorUt, Integer>{
 
     
 }

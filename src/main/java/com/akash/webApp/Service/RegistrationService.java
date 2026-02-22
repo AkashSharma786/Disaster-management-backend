@@ -26,7 +26,7 @@ public class RegistrationService {
             || user.getLastName() == null
             || user.getEmail() == null 
             || user.getPassword() == null 
-            || user.getDistrictLGDCode() == null
+            || user.getDistrict() == null
             || user.getPhoneNumber() == null 
             || user.getRole() == null    ) {
             return "Invalid registration data";

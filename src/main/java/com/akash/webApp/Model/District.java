@@ -27,26 +27,26 @@ public class District{
 
         @ManyToOne(cascade = CascadeType.ALL)
         @JoinColumn(  referencedColumnName = "id", nullable = false)
-        private StateOrUt stateOrUt;
+        private StateorUt stateorUt;
 
         public District(){}
         public District(Integer lgdCode){
                 this.lgdCode = lgdCode;
         }
-        public District(String name, Integer lgdCode, StateOrUt stateOrUt) {
+        public District(String name, Integer lgdCode, StateorUt stateorUt) {
                 this.name = name;
                 this.lgdCode = lgdCode;
-                this.stateOrUt = stateOrUt;
+                this.stateorUt = stateorUt;
         }
 
-        public void setStateOrUt(StateOrUt stateOrUt) {
-                this.stateOrUt = stateOrUt;
+        public void setStateorUt(StateorUt stateorUt) {
+                this.stateorUt = stateorUt;
         }
 
        
 
-        public StateOrUt getStateOrUt() {
-                return this.stateOrUt;
+        public StateorUt getStateorUt() {
+                return this.stateorUt;
         }
 
        

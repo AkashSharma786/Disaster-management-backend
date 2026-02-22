@@ -26,6 +26,7 @@ public class AlertItem {
     }
 
     private List<District> district;
+    public AlertItem(){}
 
     public AlertItem(String event, String urgency, String severity, String certainty, String message,
             String instruction, String effectiveDate, String expiryDate, List<District> district) {
