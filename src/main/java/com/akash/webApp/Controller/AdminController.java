@@ -18,6 +18,7 @@ import com.akash.webApp.Service.DisasterReportService;
 import com.akash.webApp.Service.RegistrationService;
 import com.akash.webApp.Service.AlertServices.AlertItemService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,8 +74,17 @@ public Mono<AlertItem> getAlertItem(@PathVariable Integer state_id, @PathVariabl
             return null;
 
         result.onErrorReturn(new AlertItem());
+    return result;
+}
 
-    
+@GetMapping("/admin/ndma-alerts/{state_id}/alerts")
+public Flux<AlertItem> getAlertItem(@PathVariable Integer state_id ) throws Exception {
+
+        Flux<AlertItem> result = alertItemService.getAlerts(state_id);
+
+       
+
+        result.onErrorReturn(new AlertItem());
     return result;
 }
 

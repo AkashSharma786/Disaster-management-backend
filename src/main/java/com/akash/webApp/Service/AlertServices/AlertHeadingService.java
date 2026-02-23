@@ -13,11 +13,11 @@ import reactor.core.publisher.Mono;
 @Service
 public class AlertHeadingService {
 
-    public Mono<AltertResponse> getAlertHeadings(Mono<Object> obj) {
+    public Mono<AltertResponse> getAlertHeadings(Mono<JSONObject> obj) {
 
       return  obj.map(object -> {
-            JSONObject jsonObject = (JSONObject) object;
-            JSONObject channel = (JSONObject) jsonObject.get("channel");
+           
+            JSONObject channel = (JSONObject) object.get("channel");
 
             
 

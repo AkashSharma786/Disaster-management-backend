@@ -18,6 +18,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,26 +43,24 @@ public class ApiService {
     @Autowired
     AlertHeadingService alertHeadingService;
 
-    public Mono<Object> loadResponse(WebClient client) throws Exception {
+    public Mono<JSONObject> loadResponse(WebClient client) {
 
         XmlMapper xmlMapper = new XmlMapper();
 
-        Mono<Object> response = client.get()
+        Mono<JSONObject> response = client.get()
                 .retrieve()
                 .bodyToMono(String.class)
-                .map(res -> {
-                    try{
-                        JsonNode jsonNode = xmlMapper.readTree(res);
-                        Object obj = JSONValue.parse(jsonNode.toString());
-                        return obj;
-                    }
-                    catch(Exception e)
-                    {
-                        System.out.println(e);
-                        return null;
-                       
-                    }
+                
+                .flatMap(res -> {
 
+                   return Mono.fromCallable(()->{
+                        JsonNode jsonNode = xmlMapper.readTree(res);
+                        return (JSONObject) JSONValue.parse(jsonNode.toString());
+                       
+                    });
+
+                
+  
                 });
 
         return response;

@@ -18,6 +18,7 @@ import com.akash.webApp.Repository.StateorUtRepo;
 import com.akash.webApp.Service.ApiService;
 
 import lombok.experimental.PackagePrivate;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -32,54 +33,17 @@ public class AlertItemService {
     @Autowired
     private StateorUtRepo stateorUtRepo;
 
-    public Mono<AlertItem> getAlertItem(Integer stateId, Integer index) throws Exception {
-
-        Mono<AltertResponse> response = apiService.getApiAlerts(stateId);
-
-        return response.flatMap(res -> {
-
-            // System.out.println(res);
-
-            List<AlertHeading> alertHeadings = res.getAlertHeadings();
-            
-          
-            if ( alertHeadings == null ||alertHeadings.size() == 0) {
-                throw new IndexOutOfBoundsException();
-            }
-            // System.out.println(alertHeadings);
-
-            if (index > alertHeadings.size())
-                throw new IndexOutOfBoundsException();
-
-            String link = alertHeadings.get(index).getLink();
-            System.out.println(link);
-
-            WebClient client = WebClient.create(link);
-
-            Mono<Object> obj;
-            try {
-                obj = apiService.loadResponse(client);
-            } catch (Exception e) {
-                // TODO: handle exception
-                obj = null;
-                System.out.println(e);
-            }
-
-            // System.out.println(obj);
-
-            Mono<AlertItem> result = obj.flatMap(data -> {
-
-                // System.out.println(data.toString());
-
-                JSONObject jsonObject = (JSONObject) data;
+ 
+    public AlertItem parsAlertItem(JSONObject data, Integer stateId){
+        
                 // System.out.println(jsonObject.toString());
                 JSONObject alert = null;
-                if (jsonObject.get("info") instanceof JSONObject) {
-                    alert = (JSONObject) jsonObject.get("info");
+                if (data.get("info") instanceof JSONObject) {
+                    alert = (JSONObject) data.get("info");
                     System.out.println("object");
 
                 } else {
-                    JSONArray alerts = (JSONArray) jsonObject.get("info");
+                    JSONArray alerts = (JSONArray) data.get("info");
                     for (int i = 0; i < alerts.size(); i++) {
                         JSONObject alertItem = (JSONObject) alerts.get(i);
                         String language = (String) alertItem.get("language");
@@ -159,14 +123,85 @@ public class AlertItemService {
 
                 }
 
-                return Mono.just(new AlertItem(event, urgency, severity, certainty, headline, instruction, effective, expires, districts));
+                return new AlertItem(event, urgency, severity, certainty, headline, instruction, effective, expires, districts);
 
-            });
+
+    }
+
+
+
+    public Mono<AlertItem> getAlertItem(Integer stateId, Integer index) throws Exception {
+
+        Mono<AltertResponse> response = apiService.getApiAlerts(stateId);
+
+        return response
+       
+        .flatMap(res -> {
+
+            // System.out.println(res);
+
+            List<AlertHeading> alertHeadings = res.getAlertHeadings();
+            
+          
+            if ( alertHeadings == null ||alertHeadings.size() == 0) {
+                throw new IndexOutOfBoundsException();
+            }
+            // System.out.println(alertHeadings);
+
+            if (index > alertHeadings.size())
+                throw new IndexOutOfBoundsException();
+
+            String link = alertHeadings.get(index).getLink();
+            System.out.println(link);
+
+            WebClient client = WebClient.create(link);
+
+            Mono<JSONObject>  obj  = apiService.loadResponse(client);
+          
+            // System.out.println(obj);
+
+            Mono<AlertItem> result = obj.map(data -> {
+
+                // System.out.println(data.toString());
+
+               return parsAlertItem(data, stateId);
+            
+            
+            }
+        
+        );
 
             return result;
 
         });
 
     }
+
+
+public Flux<AlertItem> getAlerts(Integer stateId) throws Exception{
+
+    return apiService.getApiAlerts(stateId)   // Mono<AltertResponse>
+            .flatMapMany(res -> {
+
+                List<AlertHeading> headings = res.getAlertHeadings();
+
+                if (headings == null || headings.isEmpty()) {
+                    return Flux.empty();
+                }
+
+                return Flux.fromIterable(headings)
+                     
+                        .flatMap(heading -> {
+
+                            String link = heading.getLink();
+                            WebClient client = WebClient.create(link);
+
+                            return apiService.loadResponse(client)   // Mono<Object>
+                                    .map(data -> parsAlertItem(data, stateId));
+
+                        });
+
+            });
+}
 
 }
