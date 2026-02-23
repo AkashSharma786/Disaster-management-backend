@@ -1,35 +1,51 @@
 package com.akash.webApp.Model.AlertModels;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.ManyToAny;
 import org.springframework.stereotype.Component;
 
 import com.akash.webApp.Model.District;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+
+@Entity
 public class AlertItem {
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
+    private Integer id;
+
     private String event;
     private String urgency;
     private String severity;
     private String certainty;
+    @Lob
     private String message;
     private String instruction;
-    private String effectiveDate;
-    private String expiryDate;
+    private OffsetDateTime effectiveDate;
+    private OffsetDateTime expiryDate;
 
-    
-    public String getExpiryDate() {
+    @ManyToAny
+    private List<District> district;
+
+    public OffsetDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(String expiryDate) {
+    public void setExpiryDate(OffsetDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
-    private List<District> district;
+    
     public AlertItem(){}
 
     public AlertItem(String event, String urgency, String severity, String certainty, String message,
-            String instruction, String effectiveDate, String expiryDate, List<District> district) {
+            String instruction, OffsetDateTime effectiveDate, OffsetDateTime expiryDate, List<District> district) {
         this.event = event;
         this.urgency = urgency;
         this.severity = severity;
@@ -73,11 +89,11 @@ public class AlertItem {
         this.instruction = instruction;
     }
 
-    public String getEffectiveDate() {
+    public OffsetDateTime getEffectiveDate() {
         return effectiveDate;
     }
 
-    public void setEffectiveDate(String effectiveDate) {
+    public void setEffectiveDate(OffsetDateTime effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
 

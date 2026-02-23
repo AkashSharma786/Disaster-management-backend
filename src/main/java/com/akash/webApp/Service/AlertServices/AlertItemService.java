@@ -1,5 +1,6 @@
 package com.akash.webApp.Service.AlertServices;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import com.akash.webApp.Model.District;
 import com.akash.webApp.Model.AlertModels.AlertHeading;
 import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
+import com.akash.webApp.Repository.AlertItemRepo;
 import com.akash.webApp.Repository.DistrictRepo;
 import com.akash.webApp.Repository.StateorUtRepo;
 import com.akash.webApp.Service.ApiService;
@@ -32,9 +34,11 @@ public class AlertItemService {
     private DistrictRepo districtRepo;
     @Autowired
     private StateorUtRepo stateorUtRepo;
+    @Autowired
+    private AlertItemRepo alertItemRepo;
 
  
-    public AlertItem parsAlertItem(JSONObject data, Integer stateId){
+    public AlertItem parsAlertItem(JSONObject data, Integer stateId) {
         
                 // System.out.println(jsonObject.toString());
                 JSONObject alert = null;
@@ -59,8 +63,13 @@ public class AlertItemService {
                 String urgency = (String) alert.get("urgency");
                 String severity = (String) alert.get("severity");
                 String certainty = (String) alert.get("certainty");
-                String effective = (String) alert.get("effective");
-                String expires = (String) alert.get("expires");
+
+
+                OffsetDateTime effective = OffsetDateTime.parse( (String) alert.get("effective"));
+
+                OffsetDateTime expires = OffsetDateTime.parse((String) alert.get("expires"));
+
+
                 String headline = (String) alert.get("headline");
                 String instruction = (String) alert.get("instruction");
 
@@ -130,7 +139,7 @@ public class AlertItemService {
 
 
 
-    public Mono<AlertItem> getAlertItem(Integer stateId, Integer index) throws Exception {
+    public Mono<AlertItem> getAlertItem(Integer stateId, Integer index)  {
 
         Mono<AltertResponse> response = apiService.getApiAlerts(stateId);
 
@@ -141,6 +150,7 @@ public class AlertItemService {
             // System.out.println(res);
 
             List<AlertHeading> alertHeadings = res.getAlertHeadings();
+            
             
           
             if ( alertHeadings == null ||alertHeadings.size() == 0) {
@@ -164,7 +174,11 @@ public class AlertItemService {
 
                 // System.out.println(data.toString());
 
-               return parsAlertItem(data, stateId);
+                return parsAlertItem(data, stateId);
+               
+               
+
+                
             
             
             }
@@ -178,7 +192,7 @@ public class AlertItemService {
     }
 
 
-public Flux<AlertItem> getAlerts(Integer stateId) throws Exception{
+public Flux<AlertItem> getAlerts(Integer stateId) {
 
     return apiService.getApiAlerts(stateId)   // Mono<AltertResponse>
             .flatMapMany(res -> {
@@ -202,6 +216,20 @@ public Flux<AlertItem> getAlerts(Integer stateId) throws Exception{
                         });
 
             });
+}
+
+
+
+public Mono<String> saveAlertItem(Integer stateId, Integer index)
+{
+    Mono<AlertItem> alertItem = getAlertItem(stateId, index);
+
+    return alertItem.map(item ->{
+        alertItemRepo.save(item);
+        return "success";
+
+    }).onErrorResume(e -> Mono.error(e));
+
 }
 
 }

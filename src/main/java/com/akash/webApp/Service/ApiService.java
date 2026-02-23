@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.w3c.dom.Node;
@@ -43,31 +44,33 @@ public class ApiService {
     @Autowired
     AlertHeadingService alertHeadingService;
 
-    public Mono<JSONObject> loadResponse(WebClient client) {
+    private XmlMapper xmlMapper = new XmlMapper();
 
-        XmlMapper xmlMapper = new XmlMapper();
+    public Mono<JSONObject> loadResponse(WebClient client) {
 
         Mono<JSONObject> response = client.get()
                 .retrieve()
+
                 .bodyToMono(String.class)
-                
+
                 .flatMap(res -> {
 
-                   return Mono.fromCallable(()->{
+                    return Mono.fromCallable(() -> {
                         JsonNode jsonNode = xmlMapper.readTree(res);
-                        return (JSONObject) JSONValue.parse(jsonNode.toString());
-                       
+                        Object parsed = JSONValue.parse(jsonNode.toString());
+                        if (!(parsed instanceof JSONObject)) {
+                            throw new IllegalStateException("Expected JSONObject but got " + parsed);
+                        }
+                        return (JSONObject) parsed;
                     });
 
-                
-  
                 });
 
         return response;
 
     }
 
-    public Mono<AltertResponse> getApiAlerts() throws Exception {
+    public Mono<AltertResponse> getApiAlerts() {
 
         WebClient client = Apis.getWeblient();
 
@@ -75,7 +78,7 @@ public class ApiService {
 
     }
 
-    public Mono<AltertResponse> getApiAlerts(int state_id) throws Exception {
+    public Mono<AltertResponse> getApiAlerts(int state_id) {
 
         WebClient client = Apis.getWebClient(state_id);
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.akash.webApp.Model.DisasterReport;
@@ -22,10 +23,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
+
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
@@ -35,66 +39,64 @@ public class AdminController {
     @Autowired
     AlertItemService alertItemService;
 
-    @Autowired 
+    @Autowired
     RegistrationService registrationService;
 
-    @GetMapping("/admin/reports")
+    @GetMapping("/reports")
     public List<DisasterReport> requestMethodName() {
         return disasterReportService.getAllReports();
     }
 
-    @GetMapping("/admin/ndma-alerts")
-    public Mono<AltertResponse> getAlerts()  throws Exception {
-        
-             return apiService.getApiAlerts();
-             
-        
+    @GetMapping("/ndma-alerts")
+    public Mono<AltertResponse> getAlerts() throws Exception {
+
+        return apiService.getApiAlerts();
+
     }
 
-@GetMapping("/admin/ndma-alerts/{state_id}")
-public Mono<ResponseEntity<AltertResponse>> getStateAlerts(@PathVariable Integer state_id) throws Exception {
-    if(state_id < 1 || state_id > 36)
-        return Mono.just(ResponseEntity.badRequest().body(null));
+    @GetMapping("/ndma-alerts/{state_id}")
+    public Mono<ResponseEntity<AltertResponse>> getStateAlerts(@PathVariable Integer state_id) throws Exception {
+        if (state_id < 1 || state_id > 36)
+            return Mono.just(ResponseEntity.badRequest().body(null));
 
-    Mono<AltertResponse> result = apiService.getApiAlerts(state_id);
+        Mono<AltertResponse> result = apiService.getApiAlerts(state_id);
 
-    return result.map(res -> {
-        
-        return ResponseEntity.ok(res);
-    });
-    
-}
+        return result.map(res -> {
 
-@GetMapping("/admin/ndma-alerts/{state_id}/{item_index}")
-public Mono<AlertItem> getAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index ) throws Exception {
+            return ResponseEntity.ok(res);
+        });
+
+    }
+
+    @GetMapping("/ndma-alerts/{state_id}/{item_index}")
+    public Mono<AlertItem> getAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
+            throws Exception {
 
         Mono<AlertItem> result = alertItemService.getAlertItem(state_id, item_index);
 
-        if(item_index < 0 || item_index > 20)
-            return null;
+        return result;
+    }
 
-        result.onErrorReturn(new AlertItem());
-    return result;
-}
+    @PostMapping("/ndma-alerts/{state_id}/{item_index}")
+    public Mono<String> saveAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
+            throws Exception {
+      
+       return alertItemService.saveAlertItem(state_id, item_index);
 
-@GetMapping("/admin/ndma-alerts/{state_id}/alerts")
-public Flux<AlertItem> getAlertItem(@PathVariable Integer state_id ) throws Exception {
+    }
+
+    @GetMapping("/ndma-alerts/{state_id}/alerts")
+    public Flux<AlertItem> getAlertItem(@PathVariable Integer state_id) throws Exception {
 
         Flux<AlertItem> result = alertItemService.getAlerts(state_id);
-
        
+        return result;
+    }
 
-        result.onErrorReturn(new AlertItem());
-    return result;
-}
-
-    
-
-    @GetMapping("/admin/users")
+    @GetMapping("/users")
     public List<UsersModel> getAllUsers() {
-        
+
         return registrationService.getAllUsers();
     }
 
-    
 }
