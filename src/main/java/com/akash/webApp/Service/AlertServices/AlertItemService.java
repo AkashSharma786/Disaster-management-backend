@@ -218,6 +218,45 @@ public Flux<AlertItem> getAlerts(Integer stateId) {
             });
 }
 
+public Flux<AlertItem> getSavedAlertItems() {
+    List<AlertItem> alertItems = alertItemRepo.findAll();
+    return Flux.fromIterable(alertItems);
+}
+
+public Mono<String> deleteSavedAlertItem(Integer id) {
+    return Mono.fromCallable(() -> {
+        alertItemRepo.deleteById(id);
+        return "success";
+    }).onErrorResume(e -> Mono.error(e));
+}
+
+public Mono<String> editSavedAlertItem(Integer id, AlertItem updatedItem) {
+    return Mono.fromCallable(() -> {
+        AlertItem existingItem = alertItemRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alert item not found with id: " + id));
+
+        // Update the fields of the existing item with the values from the updated item
+        existingItem.setEvent(updatedItem.getEvent());
+        existingItem.setUrgency(updatedItem.getUrgency());
+        existingItem.setSeverity(updatedItem.getSeverity());
+        existingItem.setCertainty(updatedItem.getCertainty());
+        existingItem.setMessage(updatedItem.getMessage());
+        existingItem.setInstruction(updatedItem.getInstruction());
+        existingItem.setEffectiveDate(updatedItem.getEffectiveDate());
+        existingItem.setExpiryDate(updatedItem.getExpiryDate());
+        existingItem.setDistrict(updatedItem.getDistrict());
+
+        alertItemRepo.save(existingItem);
+        return "success";
+    }).onErrorResume(e -> Mono.error(e));
+}
+
+public Mono<AlertItem> getSavedAlertItemById(Integer id) {
+    return Mono.fromCallable(() -> {
+        return alertItemRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alert item not found with id: " + id));
+    }).onErrorResume(e -> Mono.error(e));
+}
 
 
 public Mono<String> saveAlertItem(Integer stateId, Integer index)
@@ -233,3 +272,5 @@ public Mono<String> saveAlertItem(Integer stateId, Integer index)
 }
 
 }
+
+ 

@@ -20,6 +20,14 @@ public class AlertItem {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE)
     private Integer id;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     private String event;
     private String urgency;
     private String severity;

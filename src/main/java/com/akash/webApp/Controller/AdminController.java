@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,8 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -97,6 +100,30 @@ public class AdminController {
     public List<UsersModel> getAllUsers() {
 
         return registrationService.getAllUsers();
+    }
+
+    @GetMapping("/ndma-alerts/saved")
+    public Flux<AlertItem> getSavedAlerts() {
+        //TODO: process PUT request
+        return  alertItemService.getSavedAlertItems();
+        
+    }
+
+       @GetMapping("/ndma-alerts/saved/{id}")
+    public Mono<AlertItem> getSavedAlertById(@PathVariable Integer id) {
+        //TODO: process PUT request
+        return  alertItemService.getSavedAlertItemById(id);
+        
+    }
+
+    @PutMapping("/ndma-alerts/saved/{id}")
+    public Mono<String> editSavedAlerts(@PathVariable Integer id, @RequestBody AlertItem updatedItem) {
+        return alertItemService.editSavedAlertItem(id, updatedItem);
+    }
+
+    @DeleteMapping("/ndma-alerts/saved/{id}")
+    public Mono<String> deleteSavedAlert(@PathVariable Integer id) {
+        return alertItemService.deleteSavedAlertItem(id);   
     }
 
 }
