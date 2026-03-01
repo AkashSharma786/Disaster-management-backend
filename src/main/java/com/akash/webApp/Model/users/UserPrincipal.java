@@ -1,4 +1,4 @@
-package com.akash.webApp.Model;
+package com.akash.webApp.Model.users;
 
 import java.util.Collection;
 
@@ -13,6 +13,11 @@ public class UserPrincipal implements UserDetails{
 
     
     private UsersModel user;
+ 
+    public UsersModel getUser(){
+         return user;
+    }
+
     public UserPrincipal(UsersModel user){
         this.user = user;
     }

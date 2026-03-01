@@ -9,11 +9,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.akash.webApp.Model.District;
-import com.akash.webApp.Model.Role;
-import com.akash.webApp.Model.RoleEnum;
-import com.akash.webApp.Model.StateorUt;
-import com.akash.webApp.Model.UsersModel;
+import com.akash.webApp.Model.location.District;
+import com.akash.webApp.Model.location.StateorUt;
+import com.akash.webApp.Model.users.Role;
+import com.akash.webApp.Model.users.RoleEnum;
+import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Repository.DistrictRepo;
 import com.akash.webApp.Repository.RoleRepo;
 import com.akash.webApp.Repository.StateorUtRepo;

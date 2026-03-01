@@ -1,14 +1,14 @@
 package com.akash.webApp.Service;
 
 
-import com.akash.webApp.Model.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.akash.webApp.Model.UsersModel;
+import com.akash.webApp.Model.users.UserPrincipal;
+import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Repository.UsersRepo;
 
 
@@ -17,11 +17,18 @@ public class MyUserDetailsService implements UserDetailsService {
 
    
     UsersModel user;
-
     @Autowired
     UsersRepo usersRepo;
+
+  
     
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+    public UsersModel getUser() {
+        return user;
+    }
+
+    
+    
+    public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException{
 
 
         if(username.contains("@"))

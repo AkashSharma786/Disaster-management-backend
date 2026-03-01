@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.akash.webApp.Model.RoleEnum;
+import com.akash.webApp.Model.users.RoleEnum;
 import com.akash.webApp.Service.MyUserDetailsService;
 
 @Configuration

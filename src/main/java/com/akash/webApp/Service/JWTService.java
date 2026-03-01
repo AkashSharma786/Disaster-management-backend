@@ -14,6 +14,8 @@ import org.springframework.boot.jackson.autoconfigure.JacksonProperties.Json;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.akash.webApp.Model.users.UsersModel;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -45,14 +47,18 @@ public class JWTService {
     }
 
 
-    public String generateToken(String username){
+    public String generateToken(String username, UsersModel user){
 
         Map<String, Object> map = new HashMap<>();
+        map.put("role", user.getRole().getName().toString());
 
        return Jwts.builder()
             .claims()
             .add(map)
+
             .subject(username)
+            
+            
             .issuedAt( new Date(System.currentTimeMillis()))
             .expiration( new Date(System.currentTimeMillis()+ 1000*60*10))
             .and()
@@ -91,6 +97,7 @@ public class JWTService {
         System.out.println(username);
         System.out.println(token);
         Date expiration = extractExpiry(token);
+
         //System.out.println(new Date(System.currentTimeMillis()).toGMTString());
         Date current = new Date(System.currentTimeMillis());
         return (username.equals(userDetails.getUsername()) && current.before(expiration) );

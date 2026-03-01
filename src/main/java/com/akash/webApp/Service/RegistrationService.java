@@ -7,9 +7,13 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.akash.webApp.Model.UsersModel;
-
+import com.akash.webApp.Model.users.Role;
+import com.akash.webApp.Model.users.RoleEnum;
+import com.akash.webApp.Model.users.UsersModel;
+import com.akash.webApp.Repository.RoleRepo;
 import com.akash.webApp.Repository.UsersRepo;
+
+import reactor.core.publisher.Flux;
 
 @Component
 public class RegistrationService {
@@ -18,6 +22,8 @@ public class RegistrationService {
 
     @Autowired
     private UsersRepo usersRepo;
+    @Autowired
+    private RoleRepo roleRepo;
 
     public String registerUser(UsersModel user) {
         // Here you would typically save the user details to a database
@@ -44,6 +50,12 @@ public class RegistrationService {
 
     public List<UsersModel> getAllUsers() {
         return usersRepo.findAll();
+    }
+
+    public Flux<UsersModel> getResponders() {
+        Role role = roleRepo.findByName(RoleEnum.RESPONDENT).get();
+        List<UsersModel> responders = usersRepo.findByRole(role);
+        return Flux.fromIterable(responders);
     }
 
 }

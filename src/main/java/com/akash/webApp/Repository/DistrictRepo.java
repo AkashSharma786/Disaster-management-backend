@@ -3,8 +3,8 @@ package com.akash.webApp.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.akash.webApp.Model.District;
-import com.akash.webApp.Model.StateorUt;
+import com.akash.webApp.Model.location.District;
+import com.akash.webApp.Model.location.StateorUt;
 
 import java.util.List;
 

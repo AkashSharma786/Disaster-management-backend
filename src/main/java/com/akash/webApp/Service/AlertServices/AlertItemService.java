@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.akash.webApp.Model.District;
 import com.akash.webApp.Model.AlertModels.AlertHeading;
 import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
+import com.akash.webApp.Model.location.District;
 import com.akash.webApp.Repository.AlertItemRepo;
 import com.akash.webApp.Repository.DistrictRepo;
 import com.akash.webApp.Repository.StateorUtRepo;

@@ -6,7 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.ManyToAny;
 import org.springframework.stereotype.Component;
 
-import com.akash.webApp.Model.District;
+import com.akash.webApp.Model.location.District;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,6 +51,9 @@ public class AlertItem {
 
     
     public AlertItem(){}
+    public AlertItem(Integer id) {
+    this.id = id;
+}
 
     public AlertItem(String event, String urgency, String severity, String certainty, String message,
             String instruction, OffsetDateTime effectiveDate, OffsetDateTime expiryDate, List<District> district) {

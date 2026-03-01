@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.akash.webApp.Model.UsersModel;
+import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Service.RegistrationService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +24,8 @@ public class RegistrationController {
 
     @PostMapping("/api/auth/register")
     public String postMethodName(@RequestBody UsersModel entity) {
+        
+        
         return RegistrationService.registerUser(entity);
     }
     

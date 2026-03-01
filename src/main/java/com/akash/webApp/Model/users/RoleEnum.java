@@ -1,4 +1,4 @@
-package com.akash.webApp.Model;
+package com.akash.webApp.Model.users;
 
 public enum RoleEnum {
     RESIDENT,

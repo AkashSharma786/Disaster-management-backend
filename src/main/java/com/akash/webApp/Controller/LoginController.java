@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.akash.webApp.Model.LoginModel;
-import com.akash.webApp.Model.UsersModel;
+import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Service.LoginService;
 
 import org.springframework.web.bind.annotation.PostMapping;

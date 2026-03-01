@@ -1,4 +1,6 @@
-package com.akash.webApp.Model;
+package com.akash.webApp.Model.users;
+
+import com.akash.webApp.Model.location.District;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
@@ -9,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.UniqueConstraint;
-
 
 @Entity
 public class UsersModel {
@@ -22,13 +23,21 @@ public class UsersModel {
     private String firstName;
     private String lastName;
 
-    @Column(unique =  true)
+    @Column(unique = true)
     private String email;
- 
-    
-   
 
-   
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(referencedColumnName = "lgd_code", nullable = false)
+    private District district;
+
+    private String password;
+    @Column(unique = true)
+    private Long phoneNumber;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    private Role role;
+
     public District getDistrict() {
         return district;
     }
@@ -36,18 +45,6 @@ public class UsersModel {
     public void setDistrict(District district) {
         this.district = district;
     }
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(referencedColumnName = "lgd_code", nullable = false)
-    private District district;
-
-
-    private String password;
-    @Column(unique =  true)
-    private Long phoneNumber;
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
 
     public UsersModel(String firstName, String lastName, String email, District district,
             String password, Long phoneNumber, Role role) {
@@ -63,37 +60,36 @@ public class UsersModel {
     public UsersModel() {
     }
 
+     public UsersModel(Integer id) {
+        this.id = id;
+    }
+
     public UsersModel(Long phoneNumber, String email, String password) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.password = password;
     }
 
-
-
-    public String getFirstName(){
+    public String getFirstName() {
         return this.firstName;
     }
 
-    public void setFirstName(String firstName){
-         this.firstName = firstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastName(){
+    public String getLastName() {
         return this.lastName;
     }
 
-    public void setLastName(String lastName){
-         this.lastName = lastName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
-    
-
-
-    
 
     public Long getPhoneNumber() {
         return phoneNumber;
     }
+
     public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -101,6 +97,7 @@ public class UsersModel {
     public Role getRole() {
         return role;
     }
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -120,5 +117,5 @@ public class UsersModel {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
 }
