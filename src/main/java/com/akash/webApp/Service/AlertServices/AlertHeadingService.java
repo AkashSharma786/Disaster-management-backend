@@ -13,18 +13,16 @@ import reactor.core.publisher.Mono;
 @Service
 public class AlertHeadingService {
 
-    public Mono<AltertResponse> getAlertHeadings(Mono<JSONObject> obj) {
+    public AltertResponse getAlertHeadings(JSONObject obj) {
+        
 
-      return  obj.map(object -> {
+       
            
-            JSONObject channel = (JSONObject) object.get("channel");
-
-            
+            JSONObject channel = (JSONObject) obj.get("channel");
 
             Object itemObj =  channel.get("item");
 
             List<Object> items ;
-
             items = new ArrayList<>();
             if(itemObj == null){
                 
@@ -36,44 +34,26 @@ public class AlertHeadingService {
             else{
                   items = (JSONArray)itemObj;
                 }
+         
                
-           
-            
-
             AltertResponse alertRes = new AltertResponse();
             List<AlertHeading> alertHeadings = new ArrayList<>(); 
 
             for (int i = 0; i < items.size(); i++) {
-            JSONObject item = (JSONObject) items.get(i);
+                JSONObject item = (JSONObject) items.get(i);
 
-            AlertHeading alertHeading = new AlertHeading((String) item.get("title"), (String) item.get("link"),
+                AlertHeading alertHeading = new AlertHeading((String) item.get("title"), (String) item.get("link"),
                     (String) item.get("pubDate"));
-            alertHeadings.add(alertHeading);
-            // System.out.println(alertHeading.toString());
-            
-
-           
-
+                alertHeadings.add(alertHeading);
+        
             } 
 
             alertRes.setAlertHeadings(alertHeadings);
             return alertRes;
 
 
-        });
-
-
-
         
 
-        
-        
-
-       
-
-        
-       
-
-    }
+}
 
 }

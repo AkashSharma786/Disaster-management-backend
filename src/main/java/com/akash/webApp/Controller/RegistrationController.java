@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.akash.webApp.Model.location.District;
 import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Service.RegistrationService;
 
@@ -19,14 +20,18 @@ import java.util.List;
 public class RegistrationController {
 
     @Autowired
-    private RegistrationService RegistrationService;
+    private RegistrationService registrationService;
 
 
     @PostMapping("/api/auth/register")
     public String postMethodName(@RequestBody UsersModel entity) {
         
         
-        return RegistrationService.registerUser(entity);
+        return registrationService.registerUser(entity);
+    }
+    @GetMapping("/api/auth/districts")
+    public List<District> getDistricts() {
+        return registrationService.getDistricts();
     }
     
        

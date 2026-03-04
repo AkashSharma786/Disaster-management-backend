@@ -46,9 +46,9 @@ public class ApiService {
 
     private XmlMapper xmlMapper = new XmlMapper();
 
-    public Mono<JSONObject> loadResponse(WebClient client) {
+    public JSONObject loadResponse(WebClient client) {
 
-        Mono<JSONObject> response = client.get()
+        JSONObject response = client.get()
                 .retrieve()
 
                 .bodyToMono(String.class)
@@ -56,33 +56,39 @@ public class ApiService {
                 .flatMap(res -> {
 
                     return Mono.fromCallable(() -> {
-                        JsonNode jsonNode = xmlMapper.readTree(res);
-                        Object parsed = JSONValue.parse(jsonNode.toString());
-                        if (!(parsed instanceof JSONObject)) {
-                            throw new IllegalStateException("Expected JSONObject but got " + parsed);
-                        }
-                        return (JSONObject) parsed;
+                     
+                                JsonNode jsonNode = xmlMapper.readTree(res);
+                            Object parsed = JSONValue.parse(jsonNode.toString());
+                            if (!(parsed instanceof JSONObject)) {
+                                throw new IllegalStateException("Expected JSONObject but got " + parsed);
+                            }
+                            return (JSONObject) parsed;
+                       
+                       
                     });
 
-                });
+                }).block();
 
         return response;
 
     }
 
-    public Mono<AltertResponse> getApiAlerts() {
+    public AltertResponse getApiAlerts() {
 
         WebClient client = Apis.getWeblient();
-
+        System.out.println("Fetching alerts from NDMA API...");
         return alertHeadingService.getAlertHeadings(loadResponse(client));
-
+                    
+             
     }
 
-    public Mono<AltertResponse> getApiAlerts(int state_id) {
+    public AltertResponse getApiAlerts(int state_id) {
 
         WebClient client = Apis.getWebClient(state_id);
+    
 
-        return alertHeadingService.getAlertHeadings(loadResponse(client));
+       return alertHeadingService.getAlertHeadings(loadResponse(client));
+      
 
     }
 

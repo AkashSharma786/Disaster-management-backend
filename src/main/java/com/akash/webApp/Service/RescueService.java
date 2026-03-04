@@ -1,6 +1,6 @@
 package com.akash.webApp.Service;
 
-import java.lang.foreign.Linker.Option;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,50 +21,55 @@ public class RescueService {
     @Autowired
     private RescueTaskRepo rescueTaskRepo;
 
-    public Mono<String> createRescueTask(RescueTask task) {
-        return Mono.fromCallable(() -> {
+    public String createRescueTask(RescueTask task) {
+        
             
             rescueTaskRepo.save(task);
             return "Rescue task created successfully";
-        });
+        
     }
 
-    public Mono<RescueTask> getRescueTaskById(Integer id) {
+    public RescueTask getRescueTaskById(Integer id) {
         Optional<RescueTask> task = rescueTaskRepo.findById(id);
 
         if(task.isPresent()) {
-            return Mono.just(task.get());
+            return task.get();
         } else {
-            return Mono.empty();
+            return null;
         }
         
     }
 
-    public Flux<RescueTask> getAllRescueTasks() {
-        List<RescueTask> tasks = rescueTaskRepo.findAll();
-        return Flux.fromIterable(tasks);
+    public List<RescueTask> getAllRescueTasks() {
+        return rescueTaskRepo.findAll();
+
     }
 
-    public Mono<String> updateRescueTask(Integer id, RescueTask updatedTask) {
-        return 
-            getRescueTaskById(id).map(existingTask -> {
+    public String updateRescueTask(Integer id, RescueTask updatedTask) {
+         
+          RescueTask rescueTask =  getRescueTaskById(id);
+          if(rescueTask == null)
+              return "Failure to fin rescue task with id : "+ id;
+          
+            
+            
+
                 if(updatedTask.getAlertItem() != null) {
-                    existingTask.setAlertItem(updatedTask.getAlertItem());
+                    rescueTask.setAlertItem(updatedTask.getAlertItem());
                 }
                 if(updatedTask.getStatus() != null) {
-                    existingTask.setStatus(updatedTask.getStatus());
+                    rescueTask.setStatus(updatedTask.getStatus());
                 }
                 if(updatedTask.getVolunteers() != null) {
-                    existingTask.setVolunteers(updatedTask.getVolunteers());
+                    rescueTask.setVolunteers(updatedTask.getVolunteers());
                 }
                 if(updatedTask.getMessage() != null) {
-                    existingTask.setMessage(updatedTask.getMessage());
+                    rescueTask.setMessage(updatedTask.getMessage());
                 }
-                 rescueTaskRepo.save(existingTask);
+                 rescueTaskRepo.save(rescueTask);
             
                 return "Rescue task updated successfully";
-            })
-            .onErrorReturn("Rescue task not found");
+           
                 
             
           
@@ -73,11 +78,16 @@ public class RescueService {
   
  
 
-    public Mono<String> deleteRescueTask(Integer id) {
-       return getRescueTaskById(id).map(existingTask -> {
-            rescueTaskRepo.delete(existingTask);
+    public String deleteRescueTask(Integer id) {
+
+        RescueTask rescueTask =  getRescueTaskById(id);
+        if(rescueTask == null)
+            return "Rescue task not found";
+
+        
+        rescueTaskRepo.delete(rescueTask);
             return "Rescue task deleted successfully";
-        }).onErrorReturn("Rescue task not found");
+   
     }
 
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.akash.webApp.Model.DisasterReport;
+import com.akash.webApp.Model.AlertModels.AlertHeading;
 import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
 import com.akash.webApp.Model.rescue.RescueStatusEnum;
@@ -32,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 
 @RequestMapping("/admin")
 public class AdminController {
@@ -56,37 +56,37 @@ public class AdminController {
     }
 
     @GetMapping("/ndma-alerts")
-    public Mono<AltertResponse> getAlerts() throws Exception {
+    public AltertResponse getAlerts() throws Exception {
+
+        System.out.println("Fetching alerts from NDMA API...");
+        // return "success";
 
         return apiService.getApiAlerts();
 
     }
 
     @GetMapping("/ndma-alerts/{state_id}")
-    public Mono<ResponseEntity<AltertResponse>> getStateAlerts(@PathVariable Integer state_id) throws Exception {
+    public ResponseEntity<AltertResponse> getStateAlerts(@PathVariable Integer state_id) throws Exception {
         if (state_id < 1 || state_id > 36)
-            return Mono.just(ResponseEntity.badRequest().body(null));
+            return ResponseEntity.badRequest().body(null);
 
-        Mono<AltertResponse> result = apiService.getApiAlerts(state_id);
+        AltertResponse result = apiService.getApiAlerts(state_id);
 
-        return result.map(res -> {
-
-            return ResponseEntity.ok(res);
-        });
+        return ResponseEntity.ok(result);
 
     }
 
     @GetMapping("/ndma-alerts/{state_id}/{item_index}")
-    public Mono<AlertItem> getAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
+    public AlertItem getAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
             throws Exception {
 
-        Mono<AlertItem> result = alertItemService.getAlertItem(state_id, item_index);
+        AlertItem result = alertItemService.getAlertItem(state_id, item_index);
 
         return result;
     }
 
     @PostMapping("/ndma-alerts/{state_id}/{item_index}")
-    public Mono<String> saveAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
+    public String saveAlertItem(@PathVariable Integer state_id, @PathVariable Integer item_index)
             throws Exception {
 
         return alertItemService.saveAlertItem(state_id, item_index);
@@ -94,9 +94,9 @@ public class AdminController {
     }
 
     @GetMapping("/ndma-alerts/{state_id}/alerts")
-    public Flux<AlertItem> getAlertItem(@PathVariable Integer state_id) throws Exception {
+    public List<AlertItem> getAlertItem(@PathVariable Integer state_id) throws Exception {
 
-        Flux<AlertItem> result = alertItemService.getAlerts(state_id);
+        List<AlertItem> result = alertItemService.getAlerts(state_id);
 
         return result;
     }
@@ -108,59 +108,69 @@ public class AdminController {
     }
 
     @GetMapping("/responders")
-    public Flux<UsersModel> getResponders() {
+    public List<UsersModel> getResponders() {
 
         return registrationService.getResponders();
     }
 
     @GetMapping("/ndma-alerts/saved")
-    public Flux<AlertItem> getSavedAlerts() {
+    public List<AlertItem> getSavedAlerts() {
         // TODO: process PUT request
         return alertItemService.getSavedAlertItems();
 
     }
 
     @GetMapping("/ndma-alerts/saved/{id}")
-    public Mono<AlertItem> getSavedAlertById(@PathVariable Integer id) {
+    public AlertItem getSavedAlertById(@PathVariable Integer id) {
         // TODO: process PUT request
-        return alertItemService.getSavedAlertItemById(id);
+        try {
+            return alertItemService.getSavedAlertItemById(id);
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+            return null;
+        }
 
     }
 
     @PutMapping("/ndma-alerts/saved/{id}")
-    public Mono<String> editSavedAlerts(@PathVariable Integer id, @RequestBody AlertItem updatedItem) {
-        return alertItemService.editSavedAlertItem(id, updatedItem);
+    public String editSavedAlerts(@PathVariable Integer id, @RequestBody AlertItem updatedItem) {
+        try {
+            return alertItemService.editSavedAlertItem(id, updatedItem);
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+            return null;
+        }
     }
 
     @DeleteMapping("/ndma-alerts/saved/{id}")
-    public Mono<String> deleteSavedAlert(@PathVariable Integer id) {
+    public String deleteSavedAlert(@PathVariable Integer id) {
         return alertItemService.deleteSavedAlertItem(id);
     }
 
     @PostMapping("/rescue/create")
-    public Mono<String> createRescueTask(@RequestBody RescueTask entity) {
+    public String createRescueTask(@RequestBody RescueTask entity) {
         // TODO: process POST request
         return rescueService.createRescueTask(entity);
     }
 
     @GetMapping("/rescue/tasks")
-    public Flux<RescueTask> getAllRescueTask() {
+    public List<RescueTask> getAllRescueTask() {
         return rescueService.getAllRescueTasks();
     }
 
     @GetMapping("/rescue/{id}")
-    public Mono<RescueTask> getRescueTaskById(@PathVariable Integer id) {
+    public RescueTask getRescueTaskById(@PathVariable Integer id) {
         return rescueService.getRescueTaskById(id);
     }
 
     @PutMapping("/rescue/update/{id}")
-    public Mono<String> updateRescueTask(@PathVariable Integer id, @RequestBody RescueTask updatedTask) {
-            return rescueService.updateRescueTask(id, updatedTask);
-   
+    public String updateRescueTask(@PathVariable Integer id, @RequestBody RescueTask updatedTask) {
+        return rescueService.updateRescueTask(id, updatedTask);
+
     }
 
     @DeleteMapping("/rescue/delete/{id}")
-    public Mono<String> deleteRescueTask(@PathVariable Integer id) {
+    public String deleteRescueTask(@PathVariable Integer id) {
         return rescueService.deleteRescueTask(id);
     }
 

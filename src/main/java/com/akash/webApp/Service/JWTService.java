@@ -50,8 +50,8 @@ public class JWTService {
     public String generateToken(String username, UsersModel user){
 
         Map<String, Object> map = new HashMap<>();
-        map.put("role", user.getRole().getName().toString());
-        map.put("firstName", user.getFirstName());
+        // map.put("role", user.getRole().getName().toString());
+        // map.put("firstName", user.getFirstName());
 
        return Jwts.builder()
             .claims()
@@ -94,15 +94,16 @@ public class JWTService {
 
     public boolean validateToken(String token, UserDetails userDetails)
     {
-        String username = extractUsername(token);
-        System.out.println(username);
-        System.out.println(token);
-        Date expiration = extractExpiry(token);
+        
+            String username = extractUsername(token);
+            System.out.println(username);
+            System.out.println(token);
+            Date expiration = extractExpiry(token);
 
-        //System.out.println(new Date(System.currentTimeMillis()).toGMTString());
-        Date current = new Date(System.currentTimeMillis());
-        return (username.equals(userDetails.getUsername()) && current.before(expiration) );
-      
+            //System.out.println(new Date(System.currentTimeMillis()).toGMTString());
+            Date current = new Date(System.currentTimeMillis());
+            return (username.equals(userDetails.getUsername()) && current.before(expiration));
+       
     }
 
     public Date extractExpiry(String token){

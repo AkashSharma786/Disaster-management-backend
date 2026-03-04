@@ -139,17 +139,17 @@ public class AlertItemService {
 
 
 
-    public Mono<AlertItem> getAlertItem(Integer stateId, Integer index)  {
+    public AlertItem getAlertItem(Integer stateId, Integer index)  {
 
-        Mono<AltertResponse> response = apiService.getApiAlerts(stateId);
+        AltertResponse response = apiService.getApiAlerts(stateId);
 
-        return response
+   
        
-        .flatMap(res -> {
+       
 
             // System.out.println(res);
 
-            List<AlertHeading> alertHeadings = res.getAlertHeadings();
+            List<AlertHeading> alertHeadings = response.getAlertHeadings();
             
             
           
@@ -166,76 +166,83 @@ public class AlertItemService {
 
             WebClient client = WebClient.create(link);
 
-            Mono<JSONObject>  obj  = apiService.loadResponse(client);
+            JSONObject  obj  = apiService.loadResponse(client);
           
             // System.out.println(obj);
 
-            Mono<AlertItem> result = obj.map(data -> {
+            
 
                 // System.out.println(data.toString());
 
-                return parsAlertItem(data, stateId);
+                return parsAlertItem(obj, stateId);
                
                
 
-                
-            
-            
-            }
-        
-        );
 
-            return result;
+            
+         
 
-        });
+           
+
+       
 
     }
 
 
-public Flux<AlertItem> getAlerts(Integer stateId) {
+public List<AlertItem> getAlerts(Integer stateId) {
 
-    return apiService.getApiAlerts(stateId)   // Mono<AltertResponse>
-            .flatMapMany(res -> {
+    AltertResponse res = apiService.getApiAlerts(stateId) ;  
+          
 
                 List<AlertHeading> headings = res.getAlertHeadings();
+                List<AlertItem> items = new ArrayList<>();
 
                 if (headings == null || headings.isEmpty()) {
-                    return Flux.empty();
+                    return items;
                 }
 
-                return Flux.fromIterable(headings)
-                     
-                        .flatMap(heading -> {
+              
+                for(AlertHeading heading : headings)
+                {
+                    String link = heading.getLink();
+                        WebClient client = WebClient.create(link);
 
-                            String link = heading.getLink();
-                            WebClient client = WebClient.create(link);
+                               
+                AlertItem item =  parsAlertItem(apiService.loadResponse(client), stateId);
+                items.add(item);
 
-                            return apiService.loadResponse(client)   // Mono<Object>
-                                    .map(data -> parsAlertItem(data, stateId));
+                }
+                return items;            
 
-                        });
-
-            });
 }
 
-public Flux<AlertItem> getSavedAlertItems() {
-    List<AlertItem> alertItems = alertItemRepo.findAll();
-    return Flux.fromIterable(alertItems);
+public List<AlertItem> getSavedAlertItems() {
+    return  alertItemRepo.findAll();
+   
 }
 
-public Mono<String> deleteSavedAlertItem(Integer id) {
-    return Mono.fromCallable(() -> {
+public String deleteSavedAlertItem(Integer id) {
+
+    try{
         alertItemRepo.deleteById(id);
         return "success";
-    }).onErrorResume(e -> Mono.error(e));
+    }
+    catch(Exception e){
+        return "failure";
+    }
+        
+    
+        
+   
 }
 
-public Mono<String> editSavedAlertItem(Integer id, AlertItem updatedItem) {
-    return Mono.fromCallable(() -> {
+public String editSavedAlertItem(Integer id, AlertItem updatedItem) throws Exception {
+   
         AlertItem existingItem = alertItemRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Alert item not found with id: " + id));
 
         // Update the fields of the existing item with the values from the updated item
+
         existingItem.setEvent(updatedItem.getEvent());
         existingItem.setUrgency(updatedItem.getUrgency());
         existingItem.setSeverity(updatedItem.getSeverity());
@@ -248,26 +255,25 @@ public Mono<String> editSavedAlertItem(Integer id, AlertItem updatedItem) {
 
         alertItemRepo.save(existingItem);
         return "success";
-    }).onErrorResume(e -> Mono.error(e));
+   
 }
 
-public Mono<AlertItem> getSavedAlertItemById(Integer id) {
-    return Mono.fromCallable(() -> {
+public AlertItem getSavedAlertItemById(Integer id) throws Exception{
+   
         return alertItemRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Alert item not found with id: " + id));
-    }).onErrorResume(e -> Mono.error(e));
+               .orElseThrow(() -> new RuntimeException("Alert item not found with id: " + id));
+    
 }
 
 
-public Mono<String> saveAlertItem(Integer stateId, Integer index)
+public String saveAlertItem(Integer stateId, Integer index) throws Exception
 {
-    Mono<AlertItem> alertItem = getAlertItem(stateId, index);
+    AlertItem alertItem = getAlertItem(stateId, index);
 
-    return alertItem.map(item ->{
-        alertItemRepo.save(item);
+        alertItemRepo.save(alertItem);
         return "success";
 
-    }).onErrorResume(e -> Mono.error(e));
+    
 
 }
 
