@@ -164,9 +164,9 @@ public class AlertItemService {
             String link = alertHeadings.get(index).getLink();
             System.out.println(link);
 
-            WebClient client = WebClient.create(link);
+           
 
-            JSONObject  obj  = apiService.loadResponse(client);
+            JSONObject  obj  = apiService.getResponse(link);
           
             // System.out.println(obj);
 
@@ -205,10 +205,7 @@ public List<AlertItem> getAlerts(Integer stateId) {
                 for(AlertHeading heading : headings)
                 {
                     String link = heading.getLink();
-                        WebClient client = WebClient.create(link);
-
-                               
-                AlertItem item =  parsAlertItem(apiService.loadResponse(client), stateId);
+                AlertItem item =  parsAlertItem(apiService.getResponse(link), stateId);
                 items.add(item);
 
                 }

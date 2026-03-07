@@ -50,8 +50,8 @@ public class JWTService {
     public String generateToken(String username, UsersModel user){
 
         Map<String, Object> map = new HashMap<>();
-        // map.put("role", user.getRole().getName().toString());
-        // map.put("firstName", user.getFirstName());
+        map.put("role", user.getRole().getName().toString());
+        map.put("firstName", user.getFirstName());
 
        return Jwts.builder()
             .claims()

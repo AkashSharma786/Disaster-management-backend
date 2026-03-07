@@ -2,13 +2,12 @@ package com.akash.webApp;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 
 @Component
 public class Apis {
+
 
     private static List<String> links = List.of(
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml",
@@ -50,12 +49,12 @@ public class Apis {
         "https://sachet.ndma.gov.in/cap_public_website/rss/rss_west.xml"
     );
 
-    public static WebClient  getWeblient(){
+    public static String  getLink(){
        
-        return  WebClient.create("https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml");
+        return  "https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml";
     }
-    public static WebClient getWebClient(int state_index){
-       return WebClient.create(links.get(state_index)); 
+    public static String getLink(int state_index){
+        return links.get(state_index);
     }
     
 }
