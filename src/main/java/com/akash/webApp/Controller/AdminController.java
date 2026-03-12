@@ -1,9 +1,18 @@
 package com.akash.webApp.Controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +26,11 @@ import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
 import com.akash.webApp.Model.rescue.RescueStatusEnum;
 import com.akash.webApp.Model.rescue.RescueTask;
+import com.akash.webApp.Model.users.UserPrincipal;
 import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Service.ApiService;
 import com.akash.webApp.Service.DisasterReportService;
+import com.akash.webApp.Service.MyUserDetailsService;
 import com.akash.webApp.Service.RegistrationService;
 import com.akash.webApp.Service.RescueService;
 import com.akash.webApp.Service.AlertServices.AlertItemService;
@@ -49,10 +60,40 @@ public class AdminController {
 
     @Autowired
     RegistrationService registrationService;
+    @Autowired
+    MyUserDetailsService myUserDetailsService;
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
+    
+    
 
     @GetMapping("/reports")
     public List<DisasterReport> requestMethodName() {
         return disasterReportService.getAllReports();
+    }
+
+    @MessageMapping("/alerts/{id}")
+    public void sendAlerts(@DestinationVariable Integer id, Principal user, 
+  @Header("simpSessionId") String sessionId) {
+        // System.out.println("AlertItem id" + id);
+        // System.out.println("Abc11111111111111111111111111111111111111111111111111111111" + headerAccessor.getUser());
+        System.out.println("Send Alerts Called..................................................................................");
+        System.out.println(" Session Id: "+ sessionId);
+        System.out.println("User : "+ user.getName());
+        
+
+        try{ 
+            
+            //return alertItemService.getSavedAlertItemById(id);
+            simpMessagingTemplate.convertAndSendToUser("abc@mail.com","/queue/residents", alertItemService.getSavedAlertItemById(id));
+        }
+        catch(Exception e){
+            System.out.print(e);
+            
+        }
+
+        
+        
     }
 
     @GetMapping("/ndma-alerts")
@@ -112,6 +153,18 @@ public class AdminController {
 
         return registrationService.getResponders();
     }
+
+    @GetMapping("/residents")
+    public List<UsersModel> getResidents() {
+        return registrationService.getResidents();
+    }
+
+    @GetMapping("/admins")
+    public List<UsersModel> getAdmins() {
+        return registrationService.getAdmins();
+    }
+    
+    
 
     @GetMapping("/ndma-alerts/saved")
     public List<AlertItem> getSavedAlerts() {

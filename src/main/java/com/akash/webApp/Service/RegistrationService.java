@@ -62,6 +62,16 @@ public class RegistrationService {
         
     }
 
+    public List<UsersModel> getResidents(){
+        Role role = roleRepo.findByName(RoleEnum.RESIDENT).get();
+        return usersRepo.findByRole(role);
+    }
+
+    public List<UsersModel> getAdmins(){
+        Role role = roleRepo.findByName(RoleEnum.ADMIN).get();
+        return usersRepo.findByRole(role);
+    }
+
     public List<District> getDistricts() {
         return districtRepo.findAll();
     }

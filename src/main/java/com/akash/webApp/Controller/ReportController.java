@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class ReportController {
 
  
@@ -33,9 +33,6 @@ public class ReportController {
    @GetMapping("/")
    public String greet(HttpServletRequest request) {
 
-     
-   
-        
        return new String("Hello" );
    }
    

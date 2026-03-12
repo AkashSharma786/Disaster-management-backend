@@ -20,6 +20,10 @@ public class UsersModel {
     @Column(nullable = false)
     private int id;
 
+    public int getId() {
+        return id;
+    }
+
     private String firstName;
     private String lastName;
 
@@ -59,6 +63,7 @@ public class UsersModel {
 
     public UsersModel() {
     }
+    
 
      public UsersModel(Integer id) {
         this.id = id;
