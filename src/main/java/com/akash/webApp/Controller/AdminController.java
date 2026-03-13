@@ -26,10 +26,12 @@ import com.akash.webApp.Model.AlertModels.AlertItem;
 import com.akash.webApp.Model.AlertModels.AltertResponse;
 import com.akash.webApp.Model.rescue.RescueStatusEnum;
 import com.akash.webApp.Model.rescue.RescueTask;
+import com.akash.webApp.Model.users.HelpRequest;
 import com.akash.webApp.Model.users.UserPrincipal;
 import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Service.ApiService;
 import com.akash.webApp.Service.DisasterReportService;
+import com.akash.webApp.Service.HelpRequestService;
 import com.akash.webApp.Service.MyUserDetailsService;
 import com.akash.webApp.Service.RegistrationService;
 import com.akash.webApp.Service.RescueService;
@@ -64,6 +66,8 @@ public class AdminController {
     MyUserDetailsService myUserDetailsService;
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    HelpRequestService helpRequestService;
     
     
 
@@ -71,6 +75,49 @@ public class AdminController {
     public List<DisasterReport> requestMethodName() {
         return disasterReportService.getAllReports();
     }
+
+    @DeleteMapping("/reports/{reportId}")
+    public String deleteReport(@PathVariable Integer reportId)
+    {   disasterReportService.deleteReport(reportId);
+        return "Success";
+    }
+
+    @GetMapping("/reports/responder/{responderId}")
+    public List<DisasterReport> getReportByResponder(@PathVariable Integer responderId) {
+        
+        return disasterReportService.getByResponder(responderId);
+    }
+
+     @GetMapping("/reports/task/{taskId}")
+    public List<DisasterReport> getReportsByTask(@PathVariable Integer taskId) {
+        
+        return disasterReportService.getByResqueTask(taskId);
+    }
+    
+
+
+    
+
+
+    @GetMapping("/requests")
+    public List<HelpRequest> helpRequests(@RequestParam String param) {
+        return helpRequestService.getAllRequests();
+    }
+
+    @GetMapping("/requests/{residentId}")
+    public List<HelpRequest> getMethodName(@PathVariable Integer residentId) {
+        return helpRequestService.getRequestByUser(residentId);
+    }
+
+    @DeleteMapping("/requests/{requestId}")
+    public String deleteRequest(@PathVariable Integer requestId)
+    {
+        helpRequestService.deleteRequest(requestId);
+        return "Success";
+    }
+    
+    
+    
 
     @MessageMapping("/alerts/{id}")
     public void sendAlerts(@DestinationVariable Integer id, Principal user, 

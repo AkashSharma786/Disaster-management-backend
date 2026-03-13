@@ -1,6 +1,7 @@
 package com.akash.webApp.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -54,6 +55,14 @@ public class RegistrationService {
 
     public List<UsersModel> getAllUsers() {
         return usersRepo.findAll();
+    }
+
+    public UsersModel getUser(Integer id){ 
+        Optional<UsersModel> user = usersRepo.findById(id);
+        if(user.isPresent())
+            return user.get();
+        return null;
+
     }
 
     public List<UsersModel> getResponders() {

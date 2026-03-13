@@ -34,6 +34,15 @@ public class DisasterReport {
     private  RescueTask rescueTask;
 
 
+    public RescueTask getRescueTask() {
+        return rescueTask;
+    }
+
+
+    public void setRescueTask(RescueTask rescueTask) {
+        this.rescueTask = rescueTask;
+    }
+
     private String message;
 
     @ManyToOne
@@ -57,17 +66,10 @@ public class DisasterReport {
     public int getId() {
         return id;
     }
-    public void setId(int id) {
-        this.id = id;
-    }
+    
+   
 
-    public RescueTask getAlertItem() {
-        return rescueTask;
-    }
-
-    public void setAlertItem(RescueTask rescueTask) {
-        this.rescueTask = rescueTask;
-    }
+   
 
     public String getMessage() {
         return message;

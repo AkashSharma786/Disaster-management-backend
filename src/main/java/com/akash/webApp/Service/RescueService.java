@@ -1,6 +1,7 @@
 package com.akash.webApp.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.akash.webApp.Model.rescue.RescueStatusEnum;
 import com.akash.webApp.Model.rescue.RescueTask;
+import com.akash.webApp.Model.users.RoleEnum;
 import com.akash.webApp.Model.users.UsersModel;
 import com.akash.webApp.Repository.RescueTaskRepo;
 
@@ -17,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class RescueService {
+    @Autowired
+    RegistrationService registrationService;
 
     @Autowired
     private RescueTaskRepo rescueTaskRepo;
@@ -45,11 +49,22 @@ public class RescueService {
 
     }
 
+    public List<RescueTask> getResponderTasks(Integer responderId){
+        UsersModel responder = registrationService.getUser(responderId);
+
+        List<RescueTask> tasks = new ArrayList<>();
+        if(responder == null || responder.getRole().getName() != RoleEnum.RESPONDENT)
+            return tasks;
+
+        return rescueTaskRepo.findByResponder(responder);
+
+    }
+
     public String updateRescueTask(Integer id, RescueTask updatedTask) {
          
           RescueTask rescueTask =  getRescueTaskById(id);
           if(rescueTask == null)
-              return "Failure to fin rescue task with id : "+ id;
+              return "Failure to find rescue task with id : "+ id;
           
             
             

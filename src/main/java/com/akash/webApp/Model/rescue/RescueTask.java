@@ -48,6 +48,11 @@ public class RescueTask {
 
     public RescueTask() {
     }
+
+    public RescueTask(Integer id)
+    {
+        this.id = id;
+    }
     
 
     public Integer getId() {
