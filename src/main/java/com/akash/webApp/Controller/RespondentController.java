@@ -53,8 +53,9 @@ public class RespondentController {
            
     }
 
-    @GetMapping("/tasks/{responderId}")
-    public List<RescueTask> getRescueTask(@PathVariable Integer responderId) {
+    @GetMapping("/tasks")
+    public List<RescueTask> getRescueTask() {
+        Integer responderId = userDetailsService.getUser().getId();
         return rescueService.getResponderTasks(responderId);
         
     }

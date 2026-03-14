@@ -100,7 +100,7 @@ public class AdminController {
 
 
     @GetMapping("/requests")
-    public List<HelpRequest> helpRequests(@RequestParam String param) {
+    public List<HelpRequest> helpRequests() {
         return helpRequestService.getAllRequests();
     }
 

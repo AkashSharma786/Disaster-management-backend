@@ -90,9 +90,6 @@ public class RescueService {
           
     }
 
-  
- 
-
     public String deleteRescueTask(Integer id) {
 
         RescueTask rescueTask =  getRescueTaskById(id);
